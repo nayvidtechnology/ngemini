@@ -51,7 +51,17 @@ jobs:
           BASE="origin/main"
           if ! git rev-parse --verify origin/main; then BASE=$(git rev-list --max-parents=0 HEAD | tail -n1); fi
           echo "Base ref: $BASE"
-          CHANGED=$(git diff --name-only "$BASE"...HEAD)
+          # Try triple-dot diff (merge-base). If no merge base (unrelated history), fall back to two-dot or full file list.
+          if git merge-base "$BASE" HEAD >/dev/null 2>&1; then
+            CHANGED=$(git diff --name-only "$BASE"...HEAD)
+          else
+            echo "No merge base with $BASE; using direct range diff."
+            CHANGED=$(git diff --name-only "$BASE" HEAD || true)
+            if [[ -z $CHANGED ]]; then
+              echo "Range diff empty; falling back to listing all tracked files."
+              CHANGED=$(git ls-files)
+            fi
+          fi
           echo "Changed files:\n$CHANGED"
           # Map to project directories
           PROJECTS=()
