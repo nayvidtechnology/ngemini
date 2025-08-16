@@ -1,4 +1,4 @@
-# Nayvid Gemini SDK (Multi-domain)
+# ngemini / Nayvid Gemini SDK (Multi-domain)
 
 This repository provides a modular .NET SDK surface for interacting with Google Gemini style capabilities (video, image, music, embeddings, speech, long-context utilities, structured output). Current implementations are placeholder/fake for rapid iteration – they demonstrate patterns, shapes and testing strategy.
 
