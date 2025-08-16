@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             x:Class="Nayvid.MauiSample.Views.MainPage"
+             Title="Gemini MAUI Sample">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12">
+            <Label Text="Video Prompt" />
+            <Entry Text="{Binding VideoPrompt}" />
+            <Button Text="Generate Video" Command="{Binding GenerateVideoCommand}" />
+            <Label Text="{Binding VideoStatus}" />
+
+            <Label Text="Image Prompt" />
+            <Entry Text="{Binding ImagePrompt}" />
+            <Button Text="Generate Image" Command="{Binding GenerateImageCommand}" />
+            <Label Text="{Binding ImageStatus}" />
+
+            <Label Text="Speech Text" />
+            <Entry Text="{Binding SpeechText}" />
+            <Button Text="Generate Speech" Command="{Binding GenerateSpeechCommand}" />
+            <Label Text="{Binding SpeechStatus}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

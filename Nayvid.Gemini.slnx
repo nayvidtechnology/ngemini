@@ -1,0 +1,30 @@
+<Solution>
+  <Folder Name="/Libraries/">
+    <Project Path="Nayvid.Gemini.Core/Nayvid.Gemini.Core.csproj" />
+    <Project Path="Nayvid.Gemini.Video/Nayvid.Gemini.Video.csproj" />
+    <Project Path="Nayvid.Gemini.Image/Nayvid.Gemini.Image.csproj" />
+    <Project Path="Nayvid.Gemini.Music/Nayvid.Gemini.Music.csproj" />
+    <Project Path="Nayvid.Gemini.Embeddings/Nayvid.Gemini.Embeddings.csproj" />
+    <Project Path="Nayvid.Gemini.LongContext/Nayvid.Gemini.LongContext.csproj" />
+    <Project Path="Nayvid.Gemini.Speech/Nayvid.Gemini.Speech.csproj" />
+    <Project Path="Nayvid.Gemini.StructuredOutput/Nayvid.Gemini.StructuredOutput.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Nayvid.Gemini.Core.Tests/Nayvid.Gemini.Core.Tests.csproj" />
+    <Project Path="Nayvid.Gemini.Video.Tests/Nayvid.Gemini.Video.Tests.csproj" />
+  <Project Path="Nayvid.Gemini.Image.Tests/Nayvid.Gemini.Image.Tests.csproj" />
+  <Project Path="Nayvid.Gemini.Music.Tests/Nayvid.Gemini.Music.Tests.csproj" />
+  <Project Path="Nayvid.Gemini.Embeddings.Tests/Nayvid.Gemini.Embeddings.Tests.csproj" />
+  <Project Path="Nayvid.Gemini.Speech.Tests/Nayvid.Gemini.Speech.Tests.csproj" />
+  <Project Path="Nayvid.Gemini.StructuredOutput.Tests/Nayvid.Gemini.StructuredOutput.Tests.csproj" />
+  <Project Path="Nayvid.Gemini.LongContext.Tests/Nayvid.Gemini.LongContext.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Samples/">
+    <Project Path="samples/Nayvid.ConsoleDemo/ConsoleDemo.csproj" />
+  </Folder>
+  <Folder Name="/Scripts/">
+    <None Path="scripts/run-tests.ps1" />
+    <None Path="scripts/run-tests.cmd" />
+    <None Path="scripts/run-tests.sh" />
+  </Folder>
+</Solution>

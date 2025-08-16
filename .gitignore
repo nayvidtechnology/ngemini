@@ -1,0 +1,81 @@
+# ---- .NET / Visual Studio / Build Artifacts ----
+[Bb]in/
+[Oo]bj/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+.history/
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# NuGet
+*.nupkg
+*.snupkg
+# NuGet packages folder (when not using packages.config)
+packages/
+# Symbol cache
+*.symbols.nupkg
+
+# Logs / Dumps
+*.log
+logs/
+*.dmp
+
+# Coverage / Test
+coverage/
+TestResults/
+*.trx
+*.coverage*
+
+# Generated
+Generated*/
+*.g.cs
+*.g.*.cs
+
+# Cache
+.ipynb_checkpoints/
+.python-version
+node_modules/
+.dist/
+
+# Env / Secrets
+.env
+.env.*
+!*.example
+secrets.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tooling
+/.azure/
+/.cache/
+
+# IDE specific
+*.DotSettings.user
+
+# Artifacts
+artifacts/
+
+# Local Only Samples
+samples/*/temp/
+
+# JetBrains Rider plugin caches
+.idea/**/workspace.xml
+
+# Resharper
+_ReSharper.Caches/
+
+# Optional: lock files from other ecosystems
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+

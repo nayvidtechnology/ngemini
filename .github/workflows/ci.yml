@@ -1,0 +1,164 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Version to release (e.g. 0.2.0)'
+        required: false
+      create_release:
+        description: 'Set to true to create a frozen release branch and publish after approval'
+        required: false
+        default: 'false'
+
+jobs:
+  build-test-pack:
+    runs-on: ubuntu-latest
+    concurrency: ci-${{ github.ref }}
+    outputs:
+      artifacts_present: ${{ steps.changed.outputs.pack_list != '' }}
+      pack_list: ${{ steps.changed.outputs.pack_list }}
+      derived_version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore Nayvid.Gemini.slnx
+
+      - name: Build
+        run: dotnet build Nayvid.Gemini.slnx --configuration Release --no-restore
+
+      - name: Test
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: dotnet test Nayvid.Gemini.slnx --configuration Release --no-build --verbosity normal
+      - name: Determine changed projects
+        id: changed
+        run: |
+          git fetch origin main --depth=1 || true
+          BASE="origin/main"
+          if ! git rev-parse --verify origin/main; then BASE=$(git rev-list --max-parents=0 HEAD | tail -n1); fi
+          echo "Base ref: $BASE"
+          CHANGED=$(git diff --name-only "$BASE"...HEAD)
+          echo "Changed files:\n$CHANGED"
+          # Map to project directories
+          PROJECTS=()
+          for f in $CHANGED; do
+            if [[ $f == *.cs || $f == *.csproj ]]; then
+              dir=$(dirname "$f")
+              while [[ $dir != "." && $dir != "" ]]; do
+                if [[ -f "$dir/$(basename $dir).csproj" ]]; then
+                  PROJECTS+=("$dir/$(basename $dir).csproj")
+                  break
+                fi
+                # fallback: pick any csproj in dir
+                csproj=$(ls "$dir"/*.csproj 2>/dev/null | head -n1 || true)
+                if [[ -n $csproj ]]; then PROJECTS+=("$csproj"); break; fi
+                dir=$(dirname "$dir")
+              done
+            fi
+          done
+          # Always include core if any project changed
+          if [[ ${#PROJECTS[@]} -gt 0 ]]; then PROJECTS+=("Nayvid.Gemini.Core/Nayvid.Gemini.Core.csproj"); fi
+          # Unique
+          UNIQUE=$(printf '%s\n' "${PROJECTS[@]}" | sort -u)
+          echo "Projects to pack:\n$UNIQUE"
+          LIST=$(echo "$UNIQUE" | paste -sd ',' -)
+          echo "pack_list=$LIST" >> $GITHUB_OUTPUT
+      - name: Derive version
+        id: version
+        run: |
+          # Derive version from workflow input, commit message (release: x.y.z) or fallback to 0.1.0+<shortsha>
+          INPUT_VER="${{ github.event.inputs.release_version }}"
+          if [[ -n "$INPUT_VER" ]]; then VER="$INPUT_VER"; else
+            MSG="${{ github.event.head_commit.message }}"
+            if [[ $MSG =~ release:?[[:space:]]*([0-9]+\.[0-9]+\.[0-9]+) ]]; then
+              VER="${BASH_REMATCH[1]}"
+            else
+              SHORT=$(git rev-parse --short HEAD)
+              VER="0.1.0-$SHORT"
+            fi
+          fi
+          echo "Using version: $VER"
+          echo "version=$VER" >> $GITHUB_OUTPUT
+
+      - name: Pack changed projects
+        if: steps.changed.outputs.pack_list != ''
+        run: |
+          IFS=',' read -ra ARR <<< "${{ steps.changed.outputs.pack_list }}"
+          mkdir -p artifacts
+            for p in "${ARR[@]}"; do
+              echo "Packing $p"
+              dotnet pack "$p" -c Release -o artifacts --no-build /p:PackageVersion=${{ steps.version.outputs.version }}
+            done
+
+      - name: Upload packages artifact
+        if: steps.changed.outputs.pack_list != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: nupkgs
+          path: artifacts/*.nupkg
+
+  publish:
+    needs: build-test-pack
+    if: needs.build-test-pack.outputs.artifacts_present == 'true' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: release-approval
+      url: https://www.nuget.org/packages
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: nupkgs
+          path: artifacts
+
+      - name: Create/Update freeze branch
+        if: ${{ github.event.inputs.create_release == 'true' || startsWith(github.event.head_commit.message, 'release:') }}
+        run: |
+          VER="${{ needs.build-test-pack.outputs.derived_version }}"
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@users.noreply.github.com"
+          git fetch origin
+          BR="release/v$VER"
+          if git ls-remote --exit-code origin "$BR" >/dev/null 2>&1; then
+            echo "Branch $BR already exists"
+          else
+            git checkout -b "$BR"
+            git push origin "$BR"
+            echo "Created $BR"
+          fi
+
+      - name: Publish to NuGet (manual approval gated env)
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        if: secrets.NUGET_API_KEY != ''
+        run: |
+          for f in artifacts/*.nupkg; do
+            echo "Pushing $f"
+            dotnet nuget push "$f" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          done
+
+      - name: Publish to GitHub Packages
+        if: github.repository_owner != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OWNER=${{ github.repository_owner }}
+            for f in artifacts/*.nupkg; do
+              echo "Publishing $f to GitHub Packages"
+              dotnet nuget push "$f" --api-key "$GITHUB_TOKEN" --source https://nuget.pkg.github.com/$OWNER/index.json --skip-duplicate
+            done
+
+      - name: Publish packages
+        if: false # legacy step disabled

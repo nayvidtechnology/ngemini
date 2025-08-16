@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Nayvid.Gemini.Video</AssemblyName>
+    <RootNamespace>Nayvid.Gemini.Video</RootNamespace>
+  <PackageId>Nayvid.Gemini.Video</PackageId>
+  <Version>0.1.0-preview.1</Version>
+  <Authors>Nayvid</Authors>
+  <Company>Nayvid</Company>
+  <Description>Video generation and analysis client for Google Gemini style APIs (upload, polling, streaming).</Description>
+  <PackageTags>gemini;ai;video;upload;client</PackageTags>
+  <RepositoryUrl>https://github.com/Nayvid/Gemini</RepositoryUrl>
+  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  <IncludeSymbols>true</IncludeSymbols>
+  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+  <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nayvid.Gemini.Core\Nayvid.Gemini.Core.csproj" />
+  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
+  </ItemGroup>
+</Project>
