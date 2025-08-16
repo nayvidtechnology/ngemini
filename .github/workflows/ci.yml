@@ -154,9 +154,12 @@ jobs:
       - name: Publish to NuGet (manual approval gated env)
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        if: secrets.NUGET_API_KEY != ''
         shell: bash
         run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "NUGET_API_KEY not set; skipping NuGet publish."
+            exit 0
+          fi
           for f in artifacts/*.nupkg; do
             echo "Pushing $f"
             dotnet nuget push "$f" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
