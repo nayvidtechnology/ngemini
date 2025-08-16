@@ -1,0 +1,69 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Console Demo",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/samples/Nayvid.ConsoleDemo/bin/Debug/net9.0/ConsoleDemo.dll",
+      "preLaunchTask": "build ConsoleDemo",
+      "cwd": "${workspaceFolder}",
+      // GEMINI_API_KEY taken from shell environment. Set before F5: $Env:GEMINI_API_KEY = 'real_key'
+      "env": {},
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run ASP.NET Sample",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/samples/Nayvid.AspNetSample/bin/Debug/net9.0/Nayvid.AspNetSample.dll",
+      "preLaunchTask": "build AspNetSample",
+      "cwd": "${workspaceFolder}/samples/Nayvid.AspNetSample",
+      "env": { "ASPNETCORE_URLS": "http://localhost:5000" },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Now listening on: (https?://\\S+)"
+      }
+    },
+    {
+      "name": "Run Blazor Sample (WASM)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/samples/Nayvid.BlazorSample/bin/Debug/net9.0/Nayvid.BlazorSample.dll",
+      "preLaunchTask": "build BlazorSample",
+      "cwd": "${workspaceFolder}/samples/Nayvid.BlazorSample",
+      "env": {},
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Now listening on: (https?://\\S+)"
+      }
+    },
+    {
+      "name": "Run Real API Sample",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/samples/Nayvid.RealApiSample/bin/Debug/net9.0/Nayvid.RealApiSample.dll",
+      "preLaunchTask": "build RealApiSample",
+      "cwd": "${workspaceFolder}",
+      "env": {},
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Real Video Sample",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/samples/Nayvid.RealVideoSample/bin/Debug/net9.0/Nayvid.RealVideoSample.dll",
+      "preLaunchTask": "build RealVideoSample",
+      "cwd": "${workspaceFolder}",
+      "env": {},
+      "args": ["A close up cinematic shot of ocean waves glistening at sunrise"],
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "API + Blazor",
+      "configurations": ["Run ASP.NET Sample", "Run Blazor Sample (WASM)"]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build ConsoleDemo",
+      "type": "shell",
+      "command": "dotnet build samples/Nayvid.ConsoleDemo/ConsoleDemo.csproj",
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "build AspNetSample",
+      "type": "shell",
+      "command": "dotnet build samples/Nayvid.AspNetSample/Nayvid.AspNetSample.csproj",
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "build BlazorSample",
+      "type": "shell",
+      "command": "dotnet build samples/Nayvid.BlazorSample/Nayvid.BlazorSample.csproj",
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "build RealApiSample",
+      "type": "shell",
+      "command": "dotnet build samples/Nayvid.RealApiSample/Nayvid.RealApiSample.csproj",
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "build RealVideoSample",
+      "type": "shell",
+      "command": "dotnet build samples/Nayvid.RealVideoSample/Nayvid.RealVideoSample.csproj",
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    }
+  ]
+}
